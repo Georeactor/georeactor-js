@@ -15,14 +15,14 @@ html, body, #map {
   overflow-y: scroll;
   background: #fff;
   margin: 0;
-  float: left;
+  float: right;
   padding: 15px;
 }
 
 #map {
-  width: 70%;
+  width: 73%;
   height: 100%;
-  float: left;
+  float: right;
 }
 
 li.field {
@@ -36,4 +36,50 @@ li.field label {
 
 input.unused {
   color: #ccc;
+}
+
+@media (max-width: 767px) {
+  html, body {
+    overflow-y: scroll;  
+  }
+
+  #sidebar {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    float: none;
+    height: auto;
+    padding-bottom: 45px;
+  }
+
+  #map {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    float: none;
+    overflow: hidden;
+    height: 80%;
+    height: 80vh;
+  }
+
+  #layers {
+    -moz-padding-start: 0;
+    -webkit-padding-start: 0;
+    -khtml-padding-start: 0;
+    -o-padding-start: 0;
+    padding-start: 0;
+    text-align: center;
+  }
+
+  #layers li {
+    list-style: none;
+    list-style-type: none;
+    padding: 12px 18px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    width: 80%;
+    margin-left: 5%;
+    margin-bottom: 12px;
+  }
 }

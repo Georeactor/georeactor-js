@@ -110,7 +110,7 @@ function initReact() {
 
     render: function() {
       if (!this.state.selectFeature) {
-        return (<p>Select an item on the map to start the editor.</p>);
+        return (<p>Select an item on the map to view details.</p>);
       } else {
         var properties = [];
         if (this.state.selectFeature.forEachProperty) {

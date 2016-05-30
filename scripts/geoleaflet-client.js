@@ -39,6 +39,7 @@
   initMap = function() {
     map = L.map(georeactor.div)
       .setView([0, 0], 5);
+    map.attributionControl.setPrefix('');
     new L.Hash(map);
 
     if (!georeactor.tiles || !georeactor.tiles.length) {

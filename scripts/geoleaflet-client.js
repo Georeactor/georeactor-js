@@ -1,8 +1,8 @@
 /* @flow */
-/*global L, initReact, Array, detailView, topojson, georeactor, valuesForField, clickCircle */
+/*global L, initReact, Array, detailView, topojson, georeactor, valuesForField */
 
 (function() {
-  var map;
+  var map, clickCircle;
 
   mapJSONfile = function(gj) {
     dataLayer = L.geoJson(gj, {

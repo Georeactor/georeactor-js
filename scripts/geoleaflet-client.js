@@ -1,5 +1,5 @@
 /* @flow */
-/*global L, initReact, Array, detailView, topojson, georeactor, valuesForField */
+/*global L, initReact, Array, detailView, topojson, georeactor, valuesForField, clickCircle */
 
 (function() {
   var map;
@@ -11,11 +11,25 @@
           fillColor: '#f00',
           fillOpacity: 0,
           color: '#444',
-          weight: 1
+          weight: 2
         }
       },
       onEachFeature: function (feature, layer) {
         layer.on('click', function() {
+          if (clickCircle) {
+            map.removeLayer(clickCircle);
+          }
+
+          if(feature.geometry.type === 'Point') {
+            var coord = feature.geometry.coordinates.concat([]);
+            coord.reverse();
+            clickCircle = L.circleMarker(coord, {
+              radius: 80,
+              strokeColor: '#f00',
+              fillColor: '#f00'
+            }).addTo(map);
+          }
+
           fitBounds(feature.properties.bounds);
           detailView.setState({ selectFeature: feature });
           dataLayer.setStyle(function (styler) {
@@ -43,11 +57,11 @@
     new L.Hash(map);
 
     if (!georeactor.tiles || !georeactor.tiles.length) {
-      osm = L.tileLayer('http://tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      osm = L.tileLayer('//tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; OpenStreetMap contributors',
         maxZoom: 17
       }).addTo(map);
-      sat = L.tileLayer('http://{s}.tiles.mapbox.com/v3/mapmeld.map-a6ineq7y/{z}/{x}/{y}.png?updated=65f7243', {
+      sat = L.tileLayer('//{s}.tiles.mapbox.com/v3/mapmeld.map-a6ineq7y/{z}/{x}/{y}.png?updated=65f7243', {
         attribution: 'Map data &copy; OpenStreetMap contributors; satellite from MapBox',
         maxZoom: 17
       });

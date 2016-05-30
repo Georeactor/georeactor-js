@@ -5,6 +5,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <title>Sample Map</title>
     <link type="text/css" rel="stylesheet" href="styles/lib/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="styles/lib/leaflet.css"/>
     <link type="text/css" rel="stylesheet" href="styles/fullscreenmap.css"/>
   </head>
   <body>
@@ -12,12 +13,15 @@
     </div>
     <div id="map">
     </div>
+
+    <script type="text/javascript" src="scripts/lib/leaflet.js"></script>
+    <script type="text/javascript" src="scripts/lib/leaflet-hash.js"></script>
     <script type="text/javascript" src="scripts/lib/react.min.js"></script>
     <script type="text/javascript" src="scripts/lib/react-dom.min.js"></script>
     <script type="text/javascript" src="scripts/lib/jsx-transformer.min.js"></script>
     <script type="text/javascript">
     var georeactor = {
-      map: "google",
+      map: "leaflet",
       div: "map",
       data: [
         "data/chennai-wards.geojson"
@@ -25,8 +29,7 @@
     };
     </script>
     <script type="text/javascript" src="scripts/georeactor-client-common.js"></script>
-    <script type="text/javascript" src="scripts/georeactor-client.js"></script>
+    <script type="text/javascript" src="scripts/geoleaflet-client.js"></script>
     <script type="text/jsx" src="scripts/georeactor-detail.js"></script>
-    <script async defer src="//maps.googleapis.com/maps/api/js?callback=initMap"></script>
   </body>
 </html>

@@ -26,7 +26,8 @@ html, body, #map {
 }
 
 li.field {
-  margin: 4px;
+  margin: 4px 4px 8px 4px;
+  list-style-type: none;
 }
 
 li.field label {
@@ -40,7 +41,7 @@ input.unused {
 
 @media (max-width: 767px) {
   html, body {
-    overflow-y: scroll;  
+    overflow-y: scroll;
   }
 
   #sidebar {

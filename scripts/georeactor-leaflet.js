@@ -22,7 +22,7 @@
           if (typeof GEOREACTOR.initReact === 'function') {
             GEOREACTOR.initReact();
           }
-          
+
           if (clickCircle) {
             map.removeLayer(clickCircle);
           }
@@ -68,11 +68,11 @@
     }
 
     if (!GEOREACTOR.options.tiles || !GEOREACTOR.options.tiles.length) {
-      osm = L.tileLayer('//tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      var osm = L.tileLayer('//tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; OpenStreetMap contributors',
         maxZoom: 17
       }).addTo(map);
-      sat = L.tileLayer('//{s}.tiles.mapbox.com/v3/mapmeld.map-a6ineq7y/{z}/{x}/{y}.png?updated=65f7243', {
+      var sat = L.tileLayer('//{s}.tiles.mapbox.com/v3/mapmeld.map-a6ineq7y/{z}/{x}/{y}.png?updated=65f7243', {
         attribution: 'Map data &copy; OpenStreetMap contributors; satellite from MapBox',
         maxZoom: 17
       });
@@ -80,15 +80,33 @@
         "OpenStreetMap": osm,
         "Satellite": sat
       }, {}).addTo(map);
-      var layerControl = document.getElementsByClassName("leaflet-control-layers-toggle")[0];
-      setTimeout(function() {
-        layerControl.style.backgroundImage = 'url(styles/lib/images/layers.png)';
-      }, 200);
+
       map.on('baselayerchange', function() {
         /* update default lines */
       });
     } else {
       /* custom tiles */
+      if (typeof GEOREACTOR.options.tiles === 'string') {
+        L.tileLayer(GEOREACTOR.options.tiles, {
+          maxZoom: 17
+        }).addTo(map);
+      } else {
+        var layers = {};
+        GEOREACTOR.options.tiles.forEach(function(layer, i) {
+          layer = L.tileLayer(layer, {
+            maxZoom: 17
+          }).addTo(map);
+          layers['ABCDEFGHIJKLMNOPQRSTUVWXYZ'[i]] = layer;
+        });
+        L.control.layers(layers, {}).addTo(map);
+      }
+    }
+
+    var layerControl = document.getElementsByClassName("leaflet-control-layers-toggle");
+    if (layerControl.length) {
+      setTimeout(function() {
+        layerControl[0].style.backgroundImage = 'url(styles/lib/images/layers.png)';
+      }, 200);
     }
 
     GEOREACTOR._.fitBounds = function(bounds) {

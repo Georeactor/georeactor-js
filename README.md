@@ -13,22 +13,45 @@ GeoReactor is an experimental library for creating interactive, mobile-responsiv
 
 * <a href="http://georeactor.github.io/georeactor-js/leaflet.html">Leaflet + OSM</a>
 
-#### A basic map
+#### A basic Google Map
 
-Include ReactJS, the common GeoReactor Client library, and the Google Maps (gmaps) extension.
+Include the common GeoReactor Client library, and the GeoReactor Google Maps (gmaps) extension (the extension loads the Google Maps API library).
 
 Send an array of data URLs to the library to download and display that data.
 
 ```html
 <div id='map'></div>
 ...
-<script src='react.min.js'></script>
 <script src='georeactor-client.js'></script>
 <script src='georeactor-gmaps.js'></script>
 <script>
   georeactor({
     div: 'map',
+    API_KEY: '',
     data: ['data/link.geojson']
+  })
+</script>
+```
+
+#### A custom Leaflet map
+
+Include LeafletJS, the common GeoReactor Client library, and the GeoReactor Leaflet extension.
+
+Send an array of data URLs to the library to download and display that data.
+
+You can set your background tile layers.
+
+```html
+<div id='custom-div-id'></div>
+...
+<script src='georeactor-client.js'></script>
+<script src='georeactor-leaflet.js'></script>
+<script>
+  georeactor({
+    div: 'custom-div-id',
+    data: ['data/link.geojson'],
+    // optional custom tiles (Leaflet and Google modes)
+    tiles: ['//{s}.example.com/{z}/{x}/{y}.png']
   })
 </script>
 ```

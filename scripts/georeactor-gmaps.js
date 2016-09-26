@@ -40,7 +40,6 @@
     map = new google.maps.Map(document.getElementById(GEOREACTOR.options.div || 'map'), {
       zoom: 5,
       center: {lat: 0, lng: 0},
-      mapTypeId: google.maps.MapTypeId.TERRAIN,
       streetViewControl: false
     });
 

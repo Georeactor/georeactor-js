@@ -25,18 +25,23 @@ html, body, #map {
   float: right;
 }
 
-li.field {
-  margin: 4px 4px 8px 4px;
-  list-style-type: none;
+.table {
+  border: 1px solid silver;
+  border-radius: 12px;
 }
 
-li.field label {
+.table .head, .table .fieldVal {
+  padding: 7px;
+}
+
+.table .head {
+  background-color: #ccc;
   font-weight: bold;
-  display: block;
 }
 
-input.unused {
-  color: #ccc;
+.table .field:first-child .head {
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
 }
 
 @media (max-width: 767px) {

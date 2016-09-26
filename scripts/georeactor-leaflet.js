@@ -1,10 +1,13 @@
-/* @flow */
-/*global L, initReact, Array, detailView, topojson, georeactor, valuesForField */
-
 (function() {
+  if (typeof GEOREACTOR === 'undefined') {
+    console.error('GEOREACTOR: georeactor-client.js must be loaded for georeactor-leaflet to work');
+    return;
+  }
+  GEOREACTOR.library = 'leaflet';
+
   var map, clickCircle;
 
-  mapJSONfile = function(gj) {
+  GEOREACTOR._.mapJSONfile = function(gj) {
     dataLayer = L.geoJson(gj, {
       style: function (feature) {
         return {
@@ -16,6 +19,10 @@
       },
       onEachFeature: function (feature, layer) {
         layer.on('click', function() {
+          if (typeof GEOREACTOR.initReact === 'function') {
+            GEOREACTOR.initReact();
+          }
+          
           if (clickCircle) {
             map.removeLayer(clickCircle);
           }
@@ -30,8 +37,8 @@
             }).addTo(map);
           }
 
-          fitBounds(feature.properties.bounds);
-          detailView.setState({ selectFeature: feature });
+          GEOREACTOR._.fitBounds(feature.properties.bounds);
+          GEOREACTOR._.detailView.setState({ selectFeature: feature });
           dataLayer.setStyle(function (styler) {
             var fillOpacity = 0;
             if (feature === styler) {
@@ -50,13 +57,17 @@
     return dataLayer;
   };
 
-  initMap = function() {
-    map = L.map(georeactor.div)
+  georeactor = function(options) {
+    GEOREACTOR.options = options;
+
+    map = L.map(options.div || 'map')
       .setView([0, 0], 5);
     map.attributionControl.setPrefix('');
-    new L.Hash(map);
+    if (typeof L.Hash === 'function') {
+      new L.Hash(map);
+    }
 
-    if (!georeactor.tiles || !georeactor.tiles.length) {
+    if (!GEOREACTOR.options.tiles || !GEOREACTOR.options.tiles.length) {
       osm = L.tileLayer('//tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; OpenStreetMap contributors',
         maxZoom: 17
@@ -80,19 +91,17 @@
       /* custom tiles */
     }
 
-    fitBounds = function(bounds) {
+    GEOREACTOR._.fitBounds = function(bounds) {
       map.fitBounds(L.latLngBounds(
         L.latLng(bounds[1], bounds[0]),
         L.latLng(bounds[3], bounds[2])
       ));
     }
 
-    for (var d = 0; d < georeactor.data.length; d++) {
-      makeRequestFor(georeactor.data[d], function(gj) {
-        mapJSONfile(gj);
-      });
-    }
+    GEOREACTOR.commonDataLoader();
 
-    initReact();
+    if (typeof GEOREACTOR.initReact === 'function') {
+      GEOREACTOR.initReact();
+    }
   };
 })();

@@ -15,18 +15,17 @@
     <script type="text/javascript" src="scripts/lib/react.min.js"></script>
     <script type="text/javascript" src="scripts/lib/react-dom.min.js"></script>
     <script type="text/javascript" src="scripts/lib/jsx-transformer.min.js"></script>
-    <script type="text/javascript">
-    var georeactor = {
-      map: "google",
-      div: "map",
-      data: [
-        "data/chennai-wards.geojson"
-      ]
-    };
-    </script>
-    <script type="text/javascript" src="scripts/georeactor-client-common.js"></script>
     <script type="text/javascript" src="scripts/georeactor-client.js"></script>
+    <script type="text/javascript" src="scripts/georeactor-gmaps.js"></script>
     <script type="text/jsx" src="scripts/georeactor-detail.js"></script>
-    <script async defer src="//maps.googleapis.com/maps/api/js?callback=initMap"></script>
+    <script type="text/javascript">
+      georeactor({
+        div: 'map',
+        data: [
+          'data/chennai-wards.geojson'
+        ]
+        //, API_KEY: 'AIzaSyC9JYVIu0ugpzll4rKf3TwTfN458HKkmYA'
+      });
+    </script>
   </body>
 </html>

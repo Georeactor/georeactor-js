@@ -1,61 +1,136 @@
-/* @flow */
-/*global google, initReact, Array, detailView, topojson, georeactor, valuesForField */
+if (typeof console === 'undefined') {
+  console = {
+    log: function() {},
+    error: function() {}
+  }
+}
+
+// Array.forEach and Array.map for TopoJSON to work in old browsers
+if (!Array.prototype.forEach) {
+  Array.prototype.forEach = function(fn,scope){
+    var i, len;
+    for (i = 0, len = this.length; i < len; ++i) {
+      if(i in this){
+        fn.call(scope, this[i], i, this);
+      }
+    }
+  };
+}
+if (!('map' in Array.prototype)) {
+  Array.prototype.map= function(mapper, that /*opt*/) {
+    var other= new Array(this.length);
+    for (var i= 0, n= this.length; i<n; i++)
+      if (i in this)
+        other[i]= mapper.call(that, this[i], i, this);
+    return other;
+  };
+}
+
+var georeactor = function() {
+  console.error('GEOREACTOR: no maps library was added');
+};
+var GEOREACTOR = {
+  data: [],
+  options: {},
+  valuesForField: {},
+  _: { }
+};
 
 (function() {
-  var map;
+  var globalBounds;
 
-  mapJSONfile = function(gj) {
-    map.data.addGeoJson(gj);
-    map.data.setStyle(function (feature) {
-      return {
-        fillColor: '#f00',
-        fillOpacity: 0,
-        strokeColor: '#444',
-        strokeWeight: 1
+  function makeRequestFor(datafile, callback) {
+    // XMLHttpRequest without jQuery
+    var df = datafile;
+    var request = new XMLHttpRequest();
+    request.open('GET', datafile, true);
+
+    request.onreadystatechange = function() {
+      if (this.readyState === 4) {
+        if (this.status >= 200 && this.status < 400) {
+          // consume GeoJSON or TopoJSON file
+          var gj = null;
+          var datafile = df.toLowerCase();
+          if (datafile.indexOf('topojson') > -1 || datafile.indexOf('topo.json') > -1) {
+            var tj = JSON.parse(this.responseText);
+            var key = Object.keys(tj.objects)[0];
+            gj = topojson.feature(tj, tj.objects[key]);
+          } else if (datafile.indexOf('geojson') > -1 || datafile.indexOf('geo.json') > -1) {
+            gj = JSON.parse(this.responseText);
+          } else {
+            throw 'data type unknown: ' + datafile;
+          }
+
+          // get info on bounds and properties for each data file
+          gj.features.map(function(feature) {
+            var keys = Object.keys(feature.properties);
+            keys.map(function(key) {
+              var val = feature.properties[key];
+              if (!GEOREACTOR.valuesForField[key]) {
+                GEOREACTOR.valuesForField[key] = {
+                  min: val,
+                  max: val,
+                  nonZeroCount: 0
+                };
+              }
+              if (val < GEOREACTOR.valuesForField[key].min) {
+                GEOREACTOR.valuesForField[key].min = val;
+              }
+              if (val > GEOREACTOR.valuesForField[key].max) {
+                GEOREACTOR.valuesForField[key].max = val;
+              }
+              if (val) {
+                GEOREACTOR.valuesForField[key].nonZeroCount++;
+              }
+            });
+
+            var bounds = makeBounds(feature.geometry.coordinates);
+            feature.properties.bounds = bounds;
+            if (!globalBounds) {
+              globalBounds = bounds;
+            } else {
+              globalBounds[0] = Math.min(globalBounds[0], bounds[0]);
+              globalBounds[1] = Math.min(globalBounds[1], bounds[1]);
+              globalBounds[2] = Math.max(globalBounds[2], bounds[2]);
+              globalBounds[3] = Math.max(globalBounds[3], bounds[3]);
+            }
+          });
+          GEOREACTOR._.fitBounds(globalBounds);
+
+          callback(gj);
+        } else {
+          console.log('failed to do XMLHttpRequest');
+        }
       }
-    });
-    map.data.addListener('click', function(event) {
-      fitBounds(event.feature.getProperty('bounds'));
-      detailView.setState({ selectFeature: event.feature });
-      map.data.setStyle(function (feature) {
-        var fillOpacity = 0;
-        if (feature === event.feature) {
-          fillOpacity = 0.2;
-        }
-        return {
-          fillColor: '#f00',
-          fillOpacity: fillOpacity,
-          strokeColor: '#444',
-          strokeWeight: 1
-        }
+    };
+    request.send();
+  }
+
+  function makeBounds(coordinates, existing) {
+    if (!existing) {
+      existing = [180, 90, -180, -90];
+    }
+    if (typeof coordinates[0] === 'number') {
+      existing[0] = Math.min(existing[0], coordinates[0]);
+      existing[1] = Math.min(existing[1], coordinates[1]);
+      existing[2] = Math.max(existing[2], coordinates[0]);
+      existing[3] = Math.max(existing[3], coordinates[1]);
+    } else {
+      for (var c = 0; c < coordinates.length; c++) {
+        existing = makeBounds(coordinates[c], existing);
+      }
+    }
+    return existing;
+  }
+
+  GEOREACTOR.commonDataLoader = function() {
+    if (GEOREACTOR.options.data.length === 0) {
+      console.log('GEOREACTOR: no datasets to load');
+    }
+    GEOREACTOR.options.data.map(function(dataset) {
+      makeRequestFor(dataset, function (gj) {
+        GEOREACTOR._.mapJSONfile(gj);
       });
     });
-    return map.data;
-  };
-
-  initMap = function() {
-    map = new google.maps.Map(document.getElementById(georeactor.div), {
-      zoom: 5,
-      center: {lat: 0, lng: 0},
-      mapTypeId: google.maps.MapTypeId.TERRAIN,
-      streetViewControl: false
-    });
-
-    fitBounds = function(bounds) {
-      map.fitBounds(new google.maps.LatLngBounds(
-        new google.maps.LatLng(bounds[1], bounds[0]),
-        new google.maps.LatLng(bounds[3], bounds[2])
-      ));
-    }
-
-    for (var d = 0; d < georeactor.data.length; d++) {
-      makeRequestFor(georeactor.data[d], function (gj) {
-        mapJSONfile(gj);
-      });
-    }
-
-    if (typeof initReact === 'function') {
-      initReact();
-    }
   };
 })();

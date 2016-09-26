@@ -23,8 +23,34 @@
         div: 'map',
         data: [
           'data/chennai-wards.geojson'
-        ]
-        //, API_KEY: 'AIzaSyC9JYVIu0ugpzll4rKf3TwTfN458HKkmYA'
+        ],
+        // API_KEY: 'AIzaSyC9JYVIu0ugpzll4rKf3TwTfN458HKkmYA',
+        attributes: {
+          _order: ['Zone_Name', 'Zone_No', 'Ward_No'],
+          Zone_No: {
+            label: 'Zone Number'
+          },
+          Zone_Name: {
+            label: 'Zone Name',
+            value: function(key, val) {
+              val = val.toLowerCase().split(/\s+/g).map(function(part) {
+                return part.replace(part[0], part[0].toUpperCase());
+              }).join('');
+              return val;
+            }
+          },
+          Ward_No: {
+            label: 'Ward Number'
+          },
+          AREA: {
+            label: 'Area',
+            value: '#{AREA} sq km'
+          },
+          PERIMETER: {
+            label: 'Perimeter',
+            value: '#{PERIMETER} km'
+          }
+        }
       });
     </script>
   </body>

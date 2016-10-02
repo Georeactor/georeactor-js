@@ -1,0 +1,70 @@
+{
+  "name": "georeactor-client",
+  "version": "0.1.1",
+  "description": "Mapping library for Leaflet and Google Maps APIs",
+  "main": "dist/georeactor-leaflet-src.js",
+  "dependencies": {
+    "eslint": "^3.7.0",
+    "source-map": "^0.5.6",
+    "uglify-js": "^2.7.3",
+    "jake": "^8.0.12"
+  },
+  "devDependencies": {
+    "eslint": "^3.7.0",
+    "git-rev": "^0.2.1",
+    "jake": "^8.0.12",
+    "karma": "^1.3.0",
+    "mocha": "^3.1.0",
+    "source-map": "^0.5.6",
+    "uglify-js": "^2.7.3"
+  },
+  "scripts": {
+    "test": "jake test",
+    "build": "jake build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Georeactor/georeactor-js.git"
+  },
+  "keywords": [
+    "maps",
+    "georeactor",
+    "openstreetmap"
+  ],
+  "author": "Nick Doiron <ndoiron@mapmeld.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Georeactor/georeactor-js/issues"
+  },
+  "homepage": "https://github.com/Georeactor/georeactor-js#readme",
+  "eslintConfig": {
+    "root": true,
+    "globals": {
+      "L": true
+    },
+    "env": {
+      "commonjs": true,
+      "amd": true,
+      "node": false
+    },
+    "rules": {
+      "no-mixed-spaces-and-tabs": [
+        2,
+        "smart-tabs"
+      ],
+      "indent": [
+        2,
+        "tab",
+        {
+          "VariableDeclarator": 0
+        }
+      ],
+      "curly": 2,
+      "spaced-comment": 2,
+      "strict": 0,
+      "wrap-iife": 0,
+      "key-spacing": 0,
+      "consistent-return": 0
+    }
+  }
+}

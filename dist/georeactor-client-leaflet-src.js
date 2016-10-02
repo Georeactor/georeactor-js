@@ -1,5 +1,5 @@
 /*
- GeoReactor-Client 0.1.1+5aac031  http://georeactor.com
+ GeoReactor-Client 0.1.1+b0bd03d  http://georeactor.com
  (c) 2016 Nicholas Doiron (under open source, MIT license)
 */
 (function (window, document, undefined) {if (typeof console === 'undefined') {
@@ -30,10 +30,10 @@ if (!('map' in Array.prototype)) {
   };
 }
 
-var georeactor = function() {
+(window || global).georeactor = function() {
   console.error('GEOREACTOR: no maps library was added');
 };
-var GEOREACTOR = {
+(window || global).GEOREACTOR = {
   data: [],
   options: {},
   valuesForField: {},
@@ -270,4 +270,4 @@ var GEOREACTOR = {
 
 
 }(window, document));
-//# sourceMappingURL=georeactor-client-src.map
+//# sourceMappingURL=georeactor-client-leaflet-src.map

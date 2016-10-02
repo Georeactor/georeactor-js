@@ -120,7 +120,7 @@ exports.build = function (callback, version, compsBase32, buildName) {
 
 	var copy = fs.readFileSync('src/copyright.js', 'utf8').replace('{VERSION}', version),
 
-	    filenamePart = 'georeactor-client' + (buildName ? '-' + buildName : ''),
+	    filenamePart = 'georeactor-client-leaflet' + (buildName ? '-' + buildName : ''),
 	    pathPart = 'dist/' + filenamePart,
 	    srcPath = pathPart + '-src.js',
 	    mapPath = pathPart + '-src.map',

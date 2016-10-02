@@ -26,10 +26,10 @@ if (!('map' in Array.prototype)) {
   };
 }
 
-var georeactor = function() {
+(window || global).georeactor = function() {
   console.error('GEOREACTOR: no maps library was added');
 };
-var GEOREACTOR = {
+(window || global).GEOREACTOR = {
   data: [],
   options: {},
   valuesForField: {},

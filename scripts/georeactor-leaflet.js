@@ -22,11 +22,16 @@
           var banProperties = ['bounds'];
           var propKeys = Object.keys(feature.properties);
           var txtTable = '<table>';
+          GEOREACTOR.sortPropKeys(propKeys);
           propKeys.map(function(key) {
             if (banProperties.indexOf(key) > -1) {
               return;
             }
-            txtTable += '<tr><td>' + key + '</td><td>' + feature.properties[key] + '</td></tr>';
+            var parsed = GEOREACTOR.parseAttribute(key, feature.properties[key]);
+            if (parsed === false) {
+              return;
+            }
+            txtTable += '<tr><td>' + parsed[0] + '</td><td>' + parsed[1] + '</td></tr>';
           });
           txtTable += '</table>';
           layer.bindPopup(txtTable);

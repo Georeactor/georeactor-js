@@ -2,10 +2,6 @@
   var valuesForField = {};
   var calledBefore = false;
 
-  var RegExpEscape = function(text) {
-    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-  };
-
   GEOREACTOR.initReact = function(){
     // only run init once
     if (calledBefore) {
@@ -19,32 +15,12 @@
     // simple Label: Value display
     var MapLabel = React.createClass({
       render: function() {
-        var adjustedLabel = this.props.label;
-        var adjustedValue = this.props.value || '';
-
-        if (GEOREACTOR.options && GEOREACTOR.options.attributes) {
-          var propSettings = GEOREACTOR.options.attributes[adjustedLabel];
-          if (propSettings === false) {
-            // purposely asked not to display
-            return <span></span>;
-          } else if (typeof propSettings !== 'undefined' && propSettings !== null) {
-            if (typeof propSettings.label === 'function') {
-              adjustedLabel = propSettings.label(this.props.label, this.props.value, GEOREACTOR.selectFeature);
-            } else if (typeof propSettings.label === 'string') {
-              adjustedLabel = propSettings.label;
-            }
-            if (typeof propSettings.value === 'function') {
-              adjustedValue = propSettings.value(this.props.label, this.props.value, GEOREACTOR.selectFeature);
-            } else if (typeof propSettings.value === 'string') {
-              var labelrg = new RegExp('#\\{' + RegExpEscape(this.props.label) + '\\}', 'g');
-              adjustedValue = propSettings.value.replace(labelrg, adjustedValue);
-            }
-          }
+        var adjustedRow = GEOREACTOR.parseAttribute(this.props.label, this.props.value);
+        if (adjustedRow === false) {
+          return <span></span>;
         }
-
-        if (typeof adjustedValue === 'object') {
-          adjustedValue = JSON.stringify(adjustedValue);
-        }
+        var adjustedLabel = adjustedRow[0];
+        var adjustedValue = adjustedRow[1];
 
         return (<div className="field">
           <div className="head">{adjustedLabel}</div>

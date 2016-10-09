@@ -26,11 +26,22 @@
       if (GEOREACTOR.options.popups) {
         var banProperties = ['bounds'];
         var txtTable = '<table>';
-        event.feature.forEachProperty(function(value, key) {
+        var propKeys = [];
+        var propVals = {};
+        event.feature.forEachProperty(function(val, key) {
+          propKeys.push(key);
+          propVals[key] = val;
+        });
+        propKeys = GEOREACTOR.sortPropKeys(propKeys);
+        propKeys.map(function(key) {
           if (banProperties.indexOf(key) > -1) {
             return;
           }
-          txtTable += '<tr><td>' + key + '</td><td>' + value + '</td></tr>';
+          var parsed = GEOREACTOR.parseAttribute(key, propVals[key]);
+          if (parsed === false) {
+            return;
+          }
+          txtTable += '<tr><td>' + parsed[0] + '</td><td>' + parsed[1] + '</td></tr>';
         });
         txtTable += '</table>';
         infoWindow.setPosition(event.latLng);

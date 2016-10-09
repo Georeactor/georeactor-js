@@ -123,6 +123,60 @@ if (!('map' in Array.prototype)) {
     return existing;
   }
 
+  GEOREACTOR.parseAttribute = function(prop, value) {
+    var adjustedLabel = prop + '';
+    var adjustedValue = (value || '') + '';
+    var RegExpEscape = function(text) {
+      return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    };
+
+    if (GEOREACTOR.options && GEOREACTOR.options.attributes) {
+      var propSettings = GEOREACTOR.options.attributes[adjustedLabel];
+      if (propSettings === false) {
+        // purposely asked not to display
+        return false;
+
+      } else if (typeof propSettings !== 'undefined' && propSettings !== null) {
+        if (typeof propSettings.label === 'function') {
+          adjustedLabel = propSettings.label(prop, value, GEOREACTOR.selectFeature);
+        } else if (typeof propSettings.label === 'string') {
+          adjustedLabel = propSettings.label;
+        }
+        if (typeof propSettings.value === 'function') {
+          adjustedValue = propSettings.value(prop, value, GEOREACTOR.selectFeature);
+        } else if (typeof propSettings.value === 'string') {
+          var labelrg = new RegExp('#\\{' + RegExpEscape(prop) + '\\}', 'g');
+          adjustedValue = propSettings.value.replace(labelrg, adjustedValue);
+        }
+      }
+    }
+
+    if (typeof adjustedValue === 'object') {
+      adjustedValue = JSON.stringify(adjustedValue);
+    }
+
+    return [adjustedLabel, adjustedValue];
+  };
+
+  GEOREACTOR.sortPropKeys = function(properties) {
+    if (GEOREACTOR.options.attributes && GEOREACTOR.options.attributes._order) {
+      properties.sort(function(a,b) {
+        var aOrder = GEOREACTOR.options.attributes._order.indexOf(a.label);
+        var bOrder = GEOREACTOR.options.attributes._order.indexOf(b.label);
+        if (aOrder !== bOrder) {
+          if (aOrder === -1) {
+            return 1;
+          }
+          if (bOrder === -1) {
+            return -1;
+          }
+        }
+        return aOrder - bOrder;
+      });
+    }
+    return properties;
+  };
+
   GEOREACTOR.commonDataLoader = function() {
     if (GEOREACTOR.options.data.length === 0) {
       console.log('GEOREACTOR: no datasets to load');

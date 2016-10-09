@@ -9,7 +9,7 @@ GeoReactor is an experimental library for creating interactive, mobile-responsiv
 
 ## Examples
 
-* <a href="http://georeactor.github.io/georeactor-js/index.html">Google Maps API</a>
+* <a href="http://georeactor.github.io/georeactor-js/gmaps.html">Google Maps API</a>
 
 * <a href="http://georeactor.github.io/georeactor-js/leaflet.html">Leaflet + OSM</a>
 
@@ -22,12 +22,11 @@ Send an array of data URLs to the library to download and display that data.
 ```html
 <div id='map'></div>
 ...
-<script src='georeactor-client.js'></script>
-<script src='georeactor-gmaps.js'></script>
+<script src='dist/georeactor-client-gmaps.js'></script>
 <script>
   georeactor({
     div: 'map',
-    API_KEY: '',
+    API_KEY: 'AAAAA',
     data: ['data/link.geojson']
   })
 </script>
@@ -44,8 +43,7 @@ You can set your background tile layers.
 ```html
 <div id='custom-div-id'></div>
 ...
-<script src='georeactor-client.js'></script>
-<script src='georeactor-leaflet.js'></script>
+<script src='dist/georeactor-client-leaflet.js'></script>
 <script>
   georeactor({
     div: 'custom-div-id',
@@ -65,8 +63,7 @@ display.
 <div id='map'></div>
 ...
 <script src='react.min.js'></script>
-<script src='georeactor-client.js'></script>
-<script src='georeactor-gmaps.js'></script>
+<script src='dist/georeactor-client-leaflet.js'></script>
 <script type='text/jsx' src='georeactor-detail.js'></script>
 <script>
   georeactor({

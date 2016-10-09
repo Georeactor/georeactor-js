@@ -41,8 +41,11 @@
 
   GEOREACTOR.initMap = function() {
     map = new google.maps.Map(document.getElementById(GEOREACTOR.options.div || 'map'), {
-      zoom: 5,
-      center: {lat: 0, lng: 0},
+      zoom: (GEOREACTOR.options.zoom || 5),
+      center: {
+        lat: (GEOREACTOR.options.lat || 0),
+        lng: (GEOREACTOR.options.lng || GEOREACTOR.options.lon || 0)
+      },
       streetViewControl: false
     });
 

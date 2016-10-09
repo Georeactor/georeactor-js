@@ -44,6 +44,15 @@ html, body, #map {
   border-top-right-radius: 11px;
 }
 
+a {
+  color: blue;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: darkblue;
+}
+
 @media (max-width: 767px) {
   html, body {
     overflow-y: scroll;

@@ -112,7 +112,7 @@
 
     GEOREACTOR._.detailView = ReactDOM.render(
       <MapDetail/>,
-      document.getElementById('sidebar')
+      document.getElementById('details')
     );
   };
 })();

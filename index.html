@@ -3,51 +3,151 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
-    <title>Sample Map</title>
+    <title>GeoReactor JS Client Library</title>
     <link type="text/css" rel="stylesheet" href="styles/lib/bootstrap.min.css"/>
-    <link type="text/css" rel="stylesheet" href="styles/fullscreenmap.css"/>
+    <link type="text/css" rel="stylesheet" href="styles/lib/codemirror.css"/>
+    <style>
+      .CodeMirror { height: auto; }
+    </style>
   </head>
   <body>
-    <div id="map">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="jumbotron main">
+            <div class="pull-right">
+              <a class="btn btn-success" href="https://github.com/Georeactor/georeactor-js">Code on GitHub</a>
+              <a class="btn btn-info" href="./gmaps.html">With Google</a>
+              <a class="btn btn-info" href="./leaflet.html">With Leaflet</a>
+            </div>
+            <h2>
+              GeoReactor-JS
+              <small>documentation</small>
+            </h2>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <h4>GeoReactor: start function</h4>
+          <p>Tell the library where to insert the map-div, and set initial view on the map</p>
+        </div>
+        <div class="col-sm-6">
+<textarea class="cmmm">georeactor({
+  div: 'map',
+  lat: 41.11,
+  lng: -71.22,
+  zoom: 10,
+  // optional, only for Google Maps
+  API_KEY: 'YOUR_GMAPS_API_KEY'
+})</textarea>
+        </div>
+      </div>
+      <hr/>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <h4>Adding JSON data</h4>
+          <p>Send one or more data files in a data array. You no longer need to specify the lat/lng/zoom,
+          because the map will automatically center on loaded data.</p>
+        </div>
+        <div class="col-sm-6">
+<textarea class="cmmm">georeactor({
+  div: 'map',
+  data: ['path/to/download.geojson',
+    'path/to/layer.topojson']
+})</textarea>
+        </div>
+      </div>
+      <hr/>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <h4>Setting a tile layer</h4>
+          <p>If you are adding image tiles, their URLs should have a pattern which you can send as a template</p>
+        </div>
+        <div class="col-sm-6">
+<textarea class="cmmm">georeactor({
+  div: 'map',
+  data: ['path/to/download.geojson'],
+  tiles: ['//{s}.example.com/{z}/{x}/{y}.png']
+})</textarea>
+        </div>
+      </div>
+      <hr/>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <h4>Customizing field labels and display values</h4>
+          <p>Use a JSON format to change how different fields appear in popups and labels.</p>
+        </div>
+        <div class="col-sm-6">
+<textarea class="cmmm">georeactor({
+  div: 'map',
+  data: ['path/to/download.geojson'],
+  attributes: {
+    // customize field label
+    OriginalNameOfField: {
+      label: 'Name'
+    },
+
+    // customize display value
+    LEN: {
+      label: 'Length',
+      value: '#{LEN} km'
+    },
+
+    // don't display
+    Hidden: false
+  }
+})</textarea>
+        </div>
+      </div>
+      <hr/>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <h4>Re-order and re-format fields</h4>
+          <p>Add a special <code>_order</code> JSON array to change which fields appear first (any unlisted will appear after these first set)</p>
+          <p>Labels and values can be set to JavaScript functions.</p>
+        </div>
+        <div class="col-sm-6">
+<textarea class="cmmm">georeactor({
+  div: 'map',
+  data: ['path/to/download.geojson'],
+  attributes: {
+    // set an order
+    _order: ['Title', 'Advanced', 'Desc'],
+
+    // use a function
+    Advanced: {
+      value: function(key, val, feature) {
+        return val * Math.PI;
+      }
+    }
+  }
+})</textarea>
+        </div>
+      </div>
+      <hr/>
+
     </div>
-    <div id="sidebar">
-    </div>
-    <script type="text/javascript" src="scripts/lib/react.min.js"></script>
-    <script type="text/javascript" src="scripts/lib/react-dom.min.js"></script>
-    <script type="text/javascript" src="scripts/lib/jsx-transformer.min.js"></script>
-    <script type="text/javascript" src="dist/georeactor-client-gmaps.js"></script>
-    <script type="text/jsx" src="scripts/georeactor-detail.js"></script>
-    <script type="text/javascript">
-      georeactor({
-        div: 'map',
-        data: [
-          'data/chennai-wards.geojson'
-        ],
-        API_KEY: 'AIzaSyDHHf_1Brj5HO-FFjfdZwPly_K5mId9WOk',
-        attributes: {
-          _order: ['Zone_Name', 'Zone_No', 'Ward_No'],
-          Zone_No: {
-            label: 'Zone Number'
-          },
-          Zone_Name: {
-            label: 'Zone Name',
-            value: function(key, val) {
-              val = val.toLowerCase().split(/\s+/g).map(function(part) {
-                return part.replace(part[0], part[0].toUpperCase());
-              }).join('');
-              return val;
-            }
-          },
-          Ward_No: {
-            label: 'Ward Number'
-          },
-          AREA: {
-            label: 'Area',
-            value: '#{AREA} sq km'
-          },
-          PERIMETER: false
-        }
-      });
+    <script src="./scripts/lib/codemirror.min.js"></script>
+    <script src="./scripts/lib/javascript.js"></script>
+    <script>
+var txtrs = document.getElementsByClassName('cmmm');
+for (var t = 0; t < txtrs.length; t++) {
+  var txt = txtrs[t];
+  var editor = CodeMirror.fromTextArea(txt, {
+    lineNumbers: true,
+    mode: 'javascript',
+    lineWrapping: true,
+    firstLineNumber: 0,
+    height: 200,
+    readOnly: true,
+    viewportMargin: Infinity
+  });
+}
     </script>
   </body>
 </html>

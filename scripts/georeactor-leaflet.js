@@ -64,7 +64,7 @@
     GEOREACTOR.options = options;
 
     map = L.map(options.div || 'map')
-      .setView([0, 0], 5);
+      .setView([(options.lat || 0), (options.lng || options.lon || 0)], (options.zoom || 5));
     map.attributionControl.setPrefix('');
     if (typeof L.Hash === 'function') {
       new L.Hash(map);

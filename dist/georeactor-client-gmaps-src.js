@@ -1,5 +1,5 @@
 /*
- GeoReactor-Client 0.1.1+fb47c5d  http://georeactor.com
+ GeoReactor-Client 0.1.1+18b5cfc  http://georeactor.com
  (c) 2016 Nicholas Doiron (under open source, MIT license)
 */
 (function (window, document, undefined) {if (typeof console === 'undefined') {
@@ -204,6 +204,9 @@ if (!('map' in Array.prototype)) {
   };
 
   georeactor = function(options) {
+    if (window.location.hostname === 'localhost') {
+      options.API_KEY = '';
+    }
     GEOREACTOR.options = options;
 
     var sc = document.createElement('script');

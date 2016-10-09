@@ -61,6 +61,9 @@
   };
 
   georeactor = function(options) {
+    if (window.location.hostname === 'localhost') {
+      options.API_KEY = '';
+    }
     GEOREACTOR.options = options;
 
     var sc = document.createElement('script');

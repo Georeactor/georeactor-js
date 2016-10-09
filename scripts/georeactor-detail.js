@@ -22,18 +22,23 @@
         var adjustedLabel = this.props.label;
         var adjustedValue = this.props.value || '';
 
-        if (GEOREACTOR.options && GEOREACTOR.options.attributes && GEOREACTOR.options.attributes[adjustedLabel]) {
-          var adjustments = GEOREACTOR.options.attributes[adjustedLabel];
-          if (typeof adjustments.label === 'function') {
-            adjustedLabel = adjustments.label(this.props.label, this.props.value, GEOREACTOR.selectFeature);
-          } else if (typeof adjustments.label === 'string') {
-            adjustedLabel = adjustments.label;
-          }
-          if (typeof adjustments.value === 'function') {
-            adjustedValue = adjustments.value(this.props.label, this.props.value, GEOREACTOR.selectFeature);
-          } else if (typeof adjustments.value === 'string') {
-            var labelrg = new RegExp('#\\{' + RegExpEscape(this.props.label) + '\\}', 'g');
-            adjustedValue = adjustments.value.replace(labelrg, adjustedValue);
+        if (GEOREACTOR.options && GEOREACTOR.options.attributes) {
+          var propSettings = GEOREACTOR.options.attributes[adjustedLabel];
+          if (propSettings === false) {
+            // purposely asked not to display
+            return <span></span>;
+          } else if (typeof propSettings !== 'undefined' && propSettings !== null) {
+            if (typeof propSettings.label === 'function') {
+              adjustedLabel = propSettings.label(this.props.label, this.props.value, GEOREACTOR.selectFeature);
+            } else if (typeof propSettings.label === 'string') {
+              adjustedLabel = propSettings.label;
+            }
+            if (typeof propSettings.value === 'function') {
+              adjustedValue = propSettings.value(this.props.label, this.props.value, GEOREACTOR.selectFeature);
+            } else if (typeof propSettings.value === 'string') {
+              var labelrg = new RegExp('#\\{' + RegExpEscape(this.props.label) + '\\}', 'g');
+              adjustedValue = propSettings.value.replace(labelrg, adjustedValue);
+            }
           }
         }
 

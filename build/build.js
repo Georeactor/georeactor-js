@@ -40,8 +40,6 @@ function getFiles(compsBase32, client) {
 		}
 	}
 
-	console.log('');
-
 	var files = [];
 
 	for (var src in memo) {

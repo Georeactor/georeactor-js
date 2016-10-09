@@ -1,5 +1,5 @@
 (function() {
-  var map;
+  var map, infoWindow;
 
   if (typeof GEOREACTOR === 'undefined') {
     console.error('GEOREACTOR: georeactor-gmaps.js must be loaded for georeactor-gmaps to work');
@@ -22,6 +22,20 @@
       GEOREACTOR.selectFeature = event.feature;
       if (GEOREACTOR._.detailView) {
         GEOREACTOR._.detailView.setState({ selectFeature: event.feature });
+      }
+      if (GEOREACTOR.options.popups) {
+        var banProperties = ['bounds'];
+        var txtTable = '<table>';
+        event.feature.forEachProperty(function(value, key) {
+          if (banProperties.indexOf(key) > -1) {
+            return;
+          }
+          txtTable += '<tr><td>' + key + '</td><td>' + value + '</td></tr>';
+        });
+        txtTable += '</table>';
+        infoWindow.setPosition(event.latLng);
+        infoWindow.setContent(txtTable);
+        infoWindow.open(map);
       }
       map.data.setStyle(function (feature) {
         var fillOpacity = 0;
@@ -48,6 +62,8 @@
       },
       streetViewControl: false
     });
+    infoWindow = new google.maps.InfoWindow({ map: map });
+    infoWindow.close();
 
     GEOREACTOR._.fitBounds = function(bounds) {
       map.fitBounds(new google.maps.LatLngBounds(
@@ -70,7 +86,7 @@
     GEOREACTOR.options = options;
 
     var sc = document.createElement('script');
-    sc.src = '//maps.googleapis.com/maps/api/js?callback=GEOREACTOR.initMap&key=' + (options.API_KEY || '');
+    sc.src = '//maps.googleapis.com/maps/api/js?callback=GEOREACTOR.initMap&key=AIzaSyDfcomdn4y5hE1UblikOcMjtzY_ilhSP-4' // + (options.API_KEY || '');
     document.body.appendChild(sc);
   };
 })();

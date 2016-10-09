@@ -18,6 +18,19 @@
         }
       },
       onEachFeature: function (feature, layer) {
+        if (GEOREACTOR.options.popups) {
+          var banProperties = ['bounds'];
+          var propKeys = Object.keys(feature.properties);
+          var txtTable = '<table>';
+          propKeys.map(function(key) {
+            if (banProperties.indexOf(key) > -1) {
+              return;
+            }
+            txtTable += '<tr><td>' + key + '</td><td>' + feature.properties[key] + '</td></tr>';
+          });
+          txtTable += '</table>';
+          layer.bindPopup(txtTable);
+        }
         layer.on('click', function() {
           if (typeof GEOREACTOR.initReact === 'function') {
             GEOREACTOR.initReact();

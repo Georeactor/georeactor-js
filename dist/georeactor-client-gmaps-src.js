@@ -1,5 +1,5 @@
 /*
- GeoReactor-Client 0.1.1+18b5cfc  http://georeactor.com
+ GeoReactor-Client 0.1.1+4419fdb  http://georeactor.com
  (c) 2016 Nicholas Doiron (under open source, MIT license)
 */
 (function (window, document, undefined) {if (typeof console === 'undefined') {
@@ -142,7 +142,7 @@ if (!('map' in Array.prototype)) {
 
 
 (function() {
-  var map;
+  var map, infoWindow;
 
   if (typeof GEOREACTOR === 'undefined') {
     console.error('GEOREACTOR: georeactor-gmaps.js must be loaded for georeactor-gmaps to work');
@@ -166,6 +166,20 @@ if (!('map' in Array.prototype)) {
       if (GEOREACTOR._.detailView) {
         GEOREACTOR._.detailView.setState({ selectFeature: event.feature });
       }
+      if (GEOREACTOR.options.popups) {
+        var banProperties = ['bounds'];
+        var txtTable = '<table>';
+        event.feature.forEachProperty(function(value, key) {
+          if (banProperties.indexOf(key) > -1) {
+            return;
+          }
+          txtTable += '<tr><td>' + key + '</td><td>' + value + '</td></tr>';
+        });
+        txtTable += '</table>';
+        infoWindow.setPosition(event.latLng);
+        infoWindow.setContent(txtTable);
+        infoWindow.open(map);
+      }
       map.data.setStyle(function (feature) {
         var fillOpacity = 0;
         if (feature === event.feature) {
@@ -184,10 +198,15 @@ if (!('map' in Array.prototype)) {
 
   GEOREACTOR.initMap = function() {
     map = new google.maps.Map(document.getElementById(GEOREACTOR.options.div || 'map'), {
-      zoom: 5,
-      center: {lat: 0, lng: 0},
+      zoom: (GEOREACTOR.options.zoom || 5),
+      center: {
+        lat: (GEOREACTOR.options.lat || 0),
+        lng: (GEOREACTOR.options.lng || GEOREACTOR.options.lon || 0)
+      },
       streetViewControl: false
     });
+    infoWindow = new google.maps.InfoWindow({ map: map });
+    infoWindow.close();
 
     GEOREACTOR._.fitBounds = function(bounds) {
       map.fitBounds(new google.maps.LatLngBounds(
@@ -210,7 +229,7 @@ if (!('map' in Array.prototype)) {
     GEOREACTOR.options = options;
 
     var sc = document.createElement('script');
-    sc.src = '//maps.googleapis.com/maps/api/js?callback=GEOREACTOR.initMap&key=' + (options.API_KEY || '');
+    sc.src = '//maps.googleapis.com/maps/api/js?callback=GEOREACTOR.initMap&key=AIzaSyDfcomdn4y5hE1UblikOcMjtzY_ilhSP-4' // + (options.API_KEY || '');
     document.body.appendChild(sc);
   };
 })();

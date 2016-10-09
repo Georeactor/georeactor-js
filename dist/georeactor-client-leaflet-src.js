@@ -1,5 +1,5 @@
 /*
- GeoReactor-Client 0.1.1+18b5cfc  http://georeactor.com
+ GeoReactor-Client 0.1.1+4419fdb  http://georeactor.com
  (c) 2016 Nicholas Doiron (under open source, MIT license)
 */
 (function (window, document, undefined) {if (typeof console === 'undefined') {
@@ -161,6 +161,19 @@ if (!('map' in Array.prototype)) {
         }
       },
       onEachFeature: function (feature, layer) {
+        if (GEOREACTOR.options.popups) {
+          var banProperties = ['bounds'];
+          var propKeys = Object.keys(feature.properties);
+          var txtTable = '<table>';
+          propKeys.map(function(key) {
+            if (banProperties.indexOf(key) > -1) {
+              return;
+            }
+            txtTable += '<tr><td>' + key + '</td><td>' + feature.properties[key] + '</td></tr>';
+          });
+          txtTable += '</table>';
+          layer.bindPopup(txtTable);
+        }
         layer.on('click', function() {
           if (typeof GEOREACTOR.initReact === 'function') {
             GEOREACTOR.initReact();
@@ -207,7 +220,7 @@ if (!('map' in Array.prototype)) {
     GEOREACTOR.options = options;
 
     map = L.map(options.div || 'map')
-      .setView([0, 0], 5);
+      .setView([(options.lat || 0), (options.lng || options.lon || 0)], (options.zoom || 5));
     map.attributionControl.setPrefix('');
     if (typeof L.Hash === 'function') {
       new L.Hash(map);

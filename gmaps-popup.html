@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <title>Sample Map</title>
+    <link type="text/css" rel="stylesheet" href="styles/lib/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="styles/onlymap.css"/>
+  </head>
+  <body>
+    <div id="map">
+    </div>
+
+    <script type="text/javascript" src="dist/georeactor-client-gmaps.js"></script>
+    <script type="text/javascript">
+      georeactor({
+        div: 'map',
+        popups: true,
+        data: [
+          'data/chennai-wards.geojson'
+        ],
+        API_KEY: 'AIzaSyDHHf_1Brj5HO-FFjfdZwPly_K5mId9WOk',
+        attributes: {
+          _order: ['Zone_Name', 'Zone_No', 'Ward_No'],
+          Zone_No: {
+            label: 'Zone Number'
+          },
+          Zone_Name: {
+            label: 'Zone Name',
+            value: function(key, val) {
+              val = val.toLowerCase().split(/\s+/g).map(function(part) {
+                return part.replace(part[0], part[0].toUpperCase());
+              }).join('');
+              return val;
+            }
+          },
+          Ward_No: {
+            label: 'Ward Number'
+          },
+          AREA: {
+            label: 'Area',
+            value: '#{AREA} sq km'
+          },
+          PERIMETER: false
+        }
+      });
+    </script>
+  </body>
+</html>

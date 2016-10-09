@@ -47,13 +47,16 @@
 
       <div class="row">
         <div class="col-sm-6">
-          <h4>Adding JSON data</h4>
+          <h4>Adding interactive JSON data</h4>
           <p>Send one or more data files in a data array. You no longer need to specify the lat/lng/zoom,
           because the map will automatically center on loaded data.</p>
+          <p>The <code>popups</code> property activates a native API popup. If you want to use a custom
+          renderer, set the <code>GEOREACTOR.initReact</code> function.</p>
         </div>
         <div class="col-sm-6">
 <textarea class="cmmm">georeactor({
   div: 'map',
+  popups: true,
   data: ['path/to/download.geojson',
     'path/to/layer.topojson']
 })</textarea>

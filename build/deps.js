@@ -1,6 +1,9 @@
 var deps = {
-	Core: {
+	Leaflet: {
 		src: ['../scripts/georeactor-client.js', '../scripts/georeactor-leaflet.js']
+	},
+	Google: {
+  	src: ['../scripts/georeactor-client.js', '../scripts/georeactor-gmaps.js']
 	}
 };
 

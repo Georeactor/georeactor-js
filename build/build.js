@@ -5,7 +5,7 @@ var fs = require('fs'),
 
     deps = require('./deps.js').deps;
 
-function getFiles(compsBase32) {
+function getFiles(compsBase32, client) {
 	var memo = {},
 	    comps;
 
@@ -20,16 +20,23 @@ function getFiles(compsBase32) {
 		}
 	}
 
-	for (var i in deps) {
+  var usedeps;
+  if (client) {
+    usedeps = { Core: deps[client] };
+  } else {
+    usedeps = deps;
+  }
+
+	for (var i in usedeps) {
 		if (comps) {
 			if (parseInt(comps.pop(), 2) === 1) {
 				console.log(' * ' + i);
-				addFiles(deps[i].src);
+				addFiles(usedeps[i].src);
 			} else {
 				console.log('   ' + i);
 			}
 		} else {
-			addFiles(deps[i].src);
+			addFiles(usedeps[i].src);
 		}
 	}
 
@@ -112,15 +119,90 @@ function bytesToKB(bytes) {
     return (bytes / 1024).toFixed(2) + ' KB';
 };
 
-exports.build = function (callback, version, compsBase32, buildName) {
+exports.buildLeaflet = function (callback, version, compsBase32, buildName) {
 
-	var files = getFiles(compsBase32);
+	var files = getFiles(compsBase32, 'Leaflet');
 
 	console.log('Bundling and compressing ' + files.length + ' files...');
 
 	var copy = fs.readFileSync('src/copyright.js', 'utf8').replace('{VERSION}', version),
 
 	    filenamePart = 'georeactor-client-leaflet' + (buildName ? '-' + buildName : ''),
+	    pathPart = 'dist/' + filenamePart,
+	    srcPath = pathPart + '-src.js',
+	    mapPath = pathPart + '-src.map',
+	    srcFilename = filenamePart + '-src.js',
+	    mapFilename = filenamePart + '-src.map',
+
+	    bundle = bundleFiles(files, copy, version),
+	    newSrc = bundle.src + '\n//# sourceMappingURL=' + mapFilename,
+
+	    oldSrc = loadSilently(srcPath),
+	    srcDelta = getSizeDelta(newSrc, oldSrc, true);
+
+	console.log('\tUncompressed: ' + bytesToKB(newSrc.length) + srcDelta);
+
+	if (newSrc !== oldSrc) {
+		fs.writeFileSync(srcPath, newSrc);
+		fs.writeFileSync(mapPath, bundle.srcmap);
+		console.log('\tSaved to ' + srcPath);
+	}
+
+	var path = pathPart + '.js',
+	    oldCompressed = loadSilently(path),
+	    newCompressed;
+
+	try {
+		newCompressed = copy + UglifyJS.minify(newSrc, {
+			warnings: true,
+			fromString: true
+		}).code;
+	} catch(err) {
+		console.error('UglifyJS failed to minify the files');
+		console.error(err);
+		callback(err);
+	}
+
+	var delta = getSizeDelta(newCompressed, oldCompressed);
+
+	console.log('\tCompressed: ' + bytesToKB(newCompressed.length) + delta);
+
+	var newGzipped,
+	    gzippedDelta = '';
+
+	function done() {
+		if (newCompressed !== oldCompressed) {
+			fs.writeFileSync(path, newCompressed);
+			console.log('\tSaved to ' + path);
+		}
+		console.log('\tGzipped: ' + bytesToKB(newGzipped.length) + gzippedDelta);
+		callback();
+	}
+
+	zlib.gzip(newCompressed, function (err, gzipped) {
+		if (err) { return; }
+		newGzipped = gzipped;
+		if (oldCompressed && (oldCompressed !== newCompressed)) {
+			zlib.gzip(oldCompressed, function (err, oldGzipped) {
+				if (err) { return; }
+				gzippedDelta = getSizeDelta(gzipped, oldGzipped);
+				done();
+			});
+		} else {
+			done();
+		}
+	});
+};
+
+exports.buildGoogle = function (callback, version, compsBase32, buildName) {
+
+	var files = getFiles(compsBase32, 'Google');
+
+	console.log('Bundling and compressing ' + files.length + ' files...');
+
+	var copy = fs.readFileSync('src/copyright.js', 'utf8').replace('{VERSION}', version),
+
+	    filenamePart = 'georeactor-client-gmaps' + (buildName ? '-' + buildName : ''),
 	    pathPart = 'dist/' + filenamePart,
 	    srcPath = pathPart + '-src.js',
 	    mapPath = pathPart + '-src.map',

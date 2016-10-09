@@ -36,7 +36,8 @@ task('lintspec', {async: true}, hint('Checking for specs JS errors...', 'spec/su
 desc('Combine and compress Leaflet source files');
 task('build', {async: true}, function (compsBase32, buildName, officialRelease) {
 	calculateVersion(officialRelease, function(v){
-		build.build(complete, v, compsBase32, buildName);
+		build.buildLeaflet(complete, v, compsBase32, buildName);
+    build.buildGoogle(complete, v, compsBase32, buildName);
 	});
 });
 

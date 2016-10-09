@@ -25,12 +25,12 @@
         if (GEOREACTOR.options && GEOREACTOR.options.attributes && GEOREACTOR.options.attributes[adjustedLabel]) {
           var adjustments = GEOREACTOR.options.attributes[adjustedLabel];
           if (typeof adjustments.label === 'function') {
-            adjustedLabel = adjustments.label(this.props.label, this.props.value);
+            adjustedLabel = adjustments.label(this.props.label, this.props.value, GEOREACTOR.selectFeature);
           } else if (typeof adjustments.label === 'string') {
             adjustedLabel = adjustments.label;
           }
           if (typeof adjustments.value === 'function') {
-            adjustedValue = adjustments.value(this.props.label, this.props.value);
+            adjustedValue = adjustments.value(this.props.label, this.props.value, GEOREACTOR.selectFeature);
           } else if (typeof adjustments.value === 'string') {
             var labelrg = new RegExp('#\\{' + RegExpEscape(this.props.label) + '\\}', 'g');
             adjustedValue = adjustments.value.replace(labelrg, adjustedValue);

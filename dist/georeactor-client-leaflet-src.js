@@ -1,5 +1,5 @@
 /*
- GeoReactor-Client 0.1.1+52cbd22  http://georeactor.com
+ GeoReactor-Client 0.1.1+fb47c5d  http://georeactor.com
  (c) 2016 Nicholas Doiron (under open source, MIT license)
 */
 (function (window, document, undefined) {if (typeof console === 'undefined') {
@@ -181,7 +181,10 @@ if (!('map' in Array.prototype)) {
           }
 
           GEOREACTOR._.fitBounds(feature.properties.bounds);
-          GEOREACTOR._.detailView.setState({ selectFeature: feature });
+          GEOREACTOR.selectFeature = feature;
+          if (GEOREACTOR._.detailView) {
+            GEOREACTOR._.detailView.setState({ selectFeature: feature });
+          }
           dataLayer.setStyle(function (styler) {
             var fillOpacity = 0;
             if (feature === styler) {

@@ -38,7 +38,10 @@
           }
 
           GEOREACTOR._.fitBounds(feature.properties.bounds);
-          GEOREACTOR._.detailView.setState({ selectFeature: feature });
+          GEOREACTOR.selectFeature = feature;
+          if (GEOREACTOR._.detailView) {
+            GEOREACTOR._.detailView.setState({ selectFeature: feature });
+          }
           dataLayer.setStyle(function (styler) {
             var fillOpacity = 0;
             if (feature === styler) {

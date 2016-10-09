@@ -1,5 +1,5 @@
 /*
- GeoReactor-Client 0.1.1+52cbd22  http://georeactor.com
+ GeoReactor-Client 0.1.1+fb47c5d  http://georeactor.com
  (c) 2016 Nicholas Doiron (under open source, MIT license)
 */
 (function (window, document, undefined) {if (typeof console === 'undefined') {
@@ -145,7 +145,7 @@ if (!('map' in Array.prototype)) {
   var map;
 
   if (typeof GEOREACTOR === 'undefined') {
-    console.error('GEOREACTOR: georeactor-client.js must be loaded for georeactor-leaflet to work');
+    console.error('GEOREACTOR: georeactor-gmaps.js must be loaded for georeactor-gmaps to work');
     return;
   }
   GEOREACTOR.library = 'gmaps';
@@ -162,7 +162,10 @@ if (!('map' in Array.prototype)) {
     });
     map.data.addListener('click', function(event) {
       GEOREACTOR._.fitBounds(event.feature.getProperty('bounds'));
-      GEOREACTOR._.detailView.setState({ selectFeature: event.feature });
+      GEOREACTOR.selectFeature = event.feature;
+      if (GEOREACTOR._.detailView) {
+        GEOREACTOR._.detailView.setState({ selectFeature: event.feature });
+      }
       map.data.setStyle(function (feature) {
         var fillOpacity = 0;
         if (feature === event.feature) {

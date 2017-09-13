@@ -1,5 +1,7 @@
 # GeoReactor JS
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Georeactor/georeactor-js.svg)](https://greenkeeper.io/)
+
 GeoReactor is an experimental library for creating interactive, mobile-responsive maps.
 
 * Place your data on top of Google Maps or OpenStreetMap
